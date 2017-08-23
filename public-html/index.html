@@ -60,10 +60,10 @@
      <input type="checkbox" id="ExternalGroup"> Grouped<br>
     </div>
     
-    <div class="style"></div>
+    <div class="style2">
     <br>
-    <input type="button" onClick="cursor_wait();" onMouseUp="updateGraph();" value="Update Graph">
-    <input type="button" onClick="cursor_wait();" value"test">
+    <input type="button" onClick="updateGraph();" value="Update Graph">
+    </div>
 
   </td>
   <td style="width: *">
@@ -395,8 +395,8 @@
       autoResize: true,
       height: '100%',
       width: '100%',
-      nodes: { shape: 'box', borderWidth: 2, borderWidthSelected: 10},
-      edges: { arrows: { to: true }, color: { inherit: 'both' }, selectionWidth: 6 },
+      nodes: { shape: 'box', borderWidth: 2, borderWidthSelected: 10 },
+      edges: { arrows: { to: true }, color: { inherit: 'both' }, selectionWidth: 6, smooth: {enabled: false, type: 'discrete' } },
       groups: {
         SelfSolve:  { color: { background: 'rgba(171,239,231,1)', border: 'rgba(36,187,168,1)', highlight: { background: 'rgba(171,239,231,1)', border: 'rgba(36,187,168,1)' } }, hidden: false },
         NextGen:    { color: { background: 'rgba(1,169,130,1)',   border: 'rgba(1,90,70,1)',    highlight: { background: 'rgba(1,169,130,1)',   border: 'rgba(1,90,70,1)', } } },
