@@ -5,31 +5,382 @@
 
     <style type="text/css">
         #mynetwork {
-            width: 600px;
-            height: 400px;
-            border: 1px solid lightgray;
+            background: #111;
+        }
+        .style1 {
+          border-bottom: 1px solid #ddd;
+          padding: -2px;
+          font-size: 20px;
+        }
+        .style2 {
+          padding-left: 15px;
+          color: white;
+        }
+        a:visited {
+          color: white;
         }
     </style>
 </head>
-<body>
-<div id="mynetwork"></div>
+<body style="background: #111">
+<table style="width: 100%; height: 100%">
+ <tr>
+  <td style="width: 150px; vertical-align: top; color: white; font-family: calibri; background: #333;">
+    <div class="style1">Self Solve:</div>
+    <div class="style2">
+      <input type="checkbox" id="SelfSolveVis" checked=true> Visible<br>
+      <input type="checkbox" id="SelfSolveGroup"> Grouped<br>
+    </div>
+    <div class="style1">Connected:</div>
+    <div class="style2">
+      <input type="checkbox" id="ConnectedVis" checked=true> Visible<br>
+      <input type="checkbox" id="ConnectedGroup"> Grouped<br>
+    </div>
+
+    <div class="style1">NextGen:</div>
+    <div class="style2">
+      <input type="checkbox" id="NextGenVis" checked=true> Visible<br>
+      <input type="checkbox" id="NextGenGroup"> Grouped<br>
+    </div>
+    
+    <div class="style1">Sol-Cx:</div>
+    <div class="style2">
+      <input type="checkbox" id="SolCxVis" checked=true> Visible<br>
+      <input type="checkbox" id="SolCxGroup"> Grouped<br>
+    </div>
+
+    <div class="style1">Support Ops:</div>
+    <div class="style2">
+     <input type="checkbox" id="SupportOpsVis" checked=true> Visible<br>
+     <input type="checkbox" id="SupportOpsGroup"> Grouped<br>
+    </div>
+ 
+    <div class="style1">External:</div>
+    <div class="style2">
+     <input type="checkbox" id="ExternalVis" checked=true> Visible<br>
+     <input type="checkbox" id="ExternalGroup"> Grouped<br>
+    </div>
+    
+    <div class="style2">
+    <br>
+    <input type="button" onClick="updateGraph();" value="Update Graph">
+    </div>
+
+  </td>
+  <td style="width: *">
+  <div id="mynetwork"></div>
+  </td>
+  </tr>
+</div>
 
 <script type="text/javascript">
+    var trains = ['SolCx','NextGen','SelfSolve', 'Connected', 'SupportOps', 'External'];
+    var groupBoxes = ['SolCxGroup','NextGenGroup','SelfSolveGroup', 'ConnectedGroup', 'SupportOpsGroup', 'ExternalGroup'];
+    var visBoxes = ['SolCxVis','NextGenVis','SelfSolveVis', 'ConnectedVis', 'SupportOpsVis', 'ExternalVis'];
+
     // create an array with nodes
     var nodes = new vis.DataSet([
-        {id: 1, label: 'Node 1'},
-        {id: 2, label: 'Node 2'},
-        {id: 3, label: 'Node 3'},
-        {id: 4, label: 'Node 4'},
-        {id: 5, label: 'Node 5'}
+
+        //Need group
+        {id: 'SADB', label: 'SADB', group: 'Connected', cid: 'Connected' },
+
+        //Self Solve
+        {id: 'CASPER', label: 'CASPER', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'CFS', label: 'CFS', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'DWF HF Header / Footer', label: 'DWF HF Header / Footer', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'HPESC Mobile', label: 'HPESC Mobile', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'Home App portal-sahome', label: 'Home App portal-sahome', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'KMCS', label: 'KMCS', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'Media REST sa-mediastorage', label: 'Media REST sa-mediastorage', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'OAAS SBS', label: 'OAAS SBS', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'Patch Central', label: 'Patch Central', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'SA-1 Weblogic Consumer', label: 'SA-1 Weblogic Consumer', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'SA1 DWF Tomcat', label: 'SA1 DWF Tomcat', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'SAW UI', label: 'SAW UI', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'case-manager', label: 'case-manager', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'data-tee-consumer', label: 'data-tee-consumer', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'portal-apache-hpp', label: 'portal-apache-hpp', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'portal-apache-uid', label: 'portal-apache-uid', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'portal-product-images', label: 'portal-product-images', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'portal-proxy', label: 'portal-proxy', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'portal-search', label: 'portal-search', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'portal-service-profiles', label: 'portal-service-profiles', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'sa-hpesc-search', label: 'sa-hpesc-search', group: 'SelfSolve', cid: 'SelfSolve' },
+        {id: 'schema-registry', label: 'schema-registry', group: 'SelfSolve', cid: 'SelfSolve' },
+
+        //Connected
+        {id: '3PAR', label: '3PAR', group: 'Connected', cid: 'Connected' },
+        {id: 'AMC', label: 'AMC', group: 'Connected', cid: 'Connected' },
+        {id: 'APP DB', label: 'APP DB', group: 'Connected', cid: 'Connected' },
+        {id: 'BusinessMsg SBS', label: 'BusinessMsg SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'C-Track', label: 'C-Track', group: 'Connected', cid: 'Connected' },
+        {id: 'CustomerOrg SBS', label: 'CustomerOrg SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'DeviceConfig SBS', label: 'DeviceConfig SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'DeviceOrg SBS', label: 'DeviceOrg SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'DeviceReg SBS', label: 'DeviceReg SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'Direct Connect', label: 'Direct Connect', group: 'Connected', cid: 'Connected' },
+        {id: 'Domino', label: 'Domino', group: 'Connected', cid: 'Connected' },
+        {id: 'Event SBS', label: 'Event SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'Ext API Apache RP', label: 'Ext API Apache RP', group: 'Connected', cid: 'Connected' },
+        {id: 'GDID', label: 'GDID', group: 'Connected', cid: 'Connected' },
+        {id: 'HPESC', label: 'HPESC', group: 'Connected', cid: 'Connected' },
+        {id: 'IRS Adoption', label: 'IRS Adoption', group: 'Connected', cid: 'Connected' },
+        {id: 'IRS', label: 'IRS', group: 'Connected', cid: 'Connected' },
+        {id: 'iSA Portal', label: 'iSA Portal', group: 'Connected', cid: 'Connected' },
+        {id: 'ISS ETL', label: 'ISS ETL', group: 'Connected', cid: 'Connected' },
+        {id: 'Insight Online Reports', label: 'Insight Online Reports', group: 'Connected', cid: 'Connected' },
+        {id: 'JRules', label: 'JRules', group: 'Connected', cid: 'Connected' },
+        {id: 'Metrics DB Oracle', label: 'Metrics DB Oracle', group: 'Connected', cid: 'Connected' },
+        {id: 'Midways', label: 'Midways', group: 'Connected', cid: 'Connected' },
+        {id: 'OVRS', label: 'OVRS', group: 'Connected', cid: 'Connected' },
+        {id: 'Partner SBS', label: 'Partner SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'RSDC', label: 'RSDC', group: 'Connected', cid: 'Connected' },
+        {id: 'Reporting SBS', label: 'Reporting SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'Reporting Storage', label: 'Reporting Storage', group: 'Connected', cid: 'Connected' },
+        {id: 'SES', label: 'SES', group: 'Connected', cid: 'Connected' },
+        {id: 'SML', label: 'SML', group: 'Connected', cid: 'Connected' },
+        {id: 'SWM', label: 'SWM', group: 'Connected', cid: 'Connected' },
+        {id: 'Stats Bridge', label: 'Stats Bridge', group: 'Connected', cid: 'Connected' },
+        {id: 'WISC SBS', label: 'WISC SBS', group: 'Connected', cid: 'Connected' },
+        {id: 'XP Heartbeats', label: 'XP Heartbeats', group: 'Connected', cid: 'Connected' },
+
+	//NextGen Analytics
+        {id: 'AAE', label: 'AAE', group: 'NextGen', cid: 'NextGen' },
+        {id: 'Analysis [storm-topologies]', label: 'Analysis [storm-topologies]', group: 'NextGen', cid: 'NextGen' },
+        {id: 'Assessments PAF', label: 'Assessments PAF', group: 'NextGen', cid: 'NextGen' },
+        {id: 'Entitlement Service', label: 'Entitlement Service', group: 'NextGen', cid: 'NextGen' },
+        {id: 'File Submission API', label: 'File Submission API', group: 'NextGen', cid: 'NextGen' },
+        {id: 'Predictive Analytics [Spark]', label: 'Predictive Analytics', group: 'NextGen', cid: 'NextGen' },
+        {id: 'Predictive Analytics [feedback-rest]', label: 'Predictive Analytics [feedback-rest]', group: 'NextGen', cid: 'NextGen' },
+        {id: 'Prod Indexing', label: 'Prod Indexing', group: 'NextGen', cid: 'NextGen' },
+        {id: 'SA-Indexers', label: 'SA-Indexers', group: 'NextGen', cid: 'NextGen' },
+        {id: 'Sqoop', label: 'Sqoop', group: 'NextGen', cid: 'NextGen' },
+        {id: 'capability-access-manager', label: 'capability-access-manager', group: 'NextGen', cid: 'NextGen' },
+        {id: 'curiosity-rest', label: 'curiosity-rest', group: 'NextGen', cid: 'NextGen' },
+
+        //Support Ops
+        {id: 'ELK Stack', label: 'ELK Stack', group: 'SupportOps', cid: 'SupportOps' },
+        {id: 'Grafana', label: 'Grafana', group: 'SupportOps', cid: 'SupportOps' },
+        {id: 'Monitoring', label: 'Monitoring', group: 'SupportOps', cid: 'SupportOps' },
+        {id: 'Monitoring-Nginx', label: 'Monitoring-Nginx', group: 'SupportOps', cid: 'SupportOps' },
+        {id: 'Prometheus', label: 'Prometheus', group: 'SupportOps', cid: 'SupportOps' },
+        {id: 'Shipyard', label: 'Shipyard', group: 'SupportOps', cid: 'SupportOps' , cid: 'SupportOps'},
+
+        //Sol CX
+        {id: 'Apache Storm', label: 'Apache Storm', group: 'SolCx', cid: 'SolCx' },
+        {id: 'Elasticsearch Servers', label: 'Elasticsearch Servers', group: 'SolCx', cid: 'SolCx' },
+        {id: 'HBase', label: 'HBase', group: 'SolCx', cid: 'SolCx' },
+        {id: 'HDFS', label: 'HDFS', group: 'SolCx', cid: 'SolCx' },
+        {id: 'Kafka Broker Servers', label: 'Kafka Broker Servers', group: 'SolCx', cid: 'SolCx' },
+        {id: 'Zookeeper Servers', label: 'Zookeeper Servers', group: 'SolCx', cid: 'SolCx' },
+        
+        //External
+        {id: '1.0 ODS', label: '1.0 ODS', group: 'External', cid: 'External' },
+        {id: 'avOnline', label: 'avOnline', group: 'External', cid: 'External' },
+        {id: 'CAS', label: 'CAS', group: 'External', cid: 'External' },
+        {id: 'CDS+', label: 'CDS+', group: 'External', cid: 'External' },
+        {id: 'Case Cube', label: 'Case Cube', group: 'External', cid: 'External' },
+        {id: 'DMDB SQL', label: 'DMDB SQL', group: 'External', cid: 'External' },
+        {id: 'Device Summary', label: 'Device Summary', group: 'External', cid: 'External' },
+        {id: 'EAAS', label: 'EAAS', group: 'External', cid: 'External' },
+        {id: 'Event Cube', label: 'Event Cube', group: 'External', cid: 'External' },
+        {id: 'HPES', label: 'HPES', group: 'External', cid: 'External' },
+        {id: 'HPP', label: 'HPP', group: 'External', cid: 'External' },
+        {id: 'ICM', label: 'ICM', group: 'External', cid: 'External' },
+        {id: 'Image-Servlet', label: 'Image-Servelet', group: 'External', cid: 'External' },
+        {id: 'Knowledge Direct', label: 'Knowledge Direct', group: 'External', cid: 'External' },
+        {id: 'Patch Hub', label: 'Patch Hub', group: 'External', cid: 'External' },
+        {id: 'Product Master', label: 'Product Master', group: 'External', cid: 'External' },
+        {id: 'SA Ops Cube', label: 'SA Ops Cube', group: 'External', cid: 'External' },
+        {id: 'SEDB', label: 'SEDB', group: 'External', cid: 'External' },
+        {id: 'SSIS ETL', label: 'SSIS ETL', group: 'External', cid: 'External' },
+        {id: 'Security SBS', label: 'Security SBS', group: 'External', cid: 'External' },
+        {id: 'SiteMinder', label: 'SiteMinder', group: 'External', cid: 'External' },
+        {id: 'SpaceCat', label: 'SpaceCat', group: 'External', cid: 'External' },
+        {id: 'Unified ID', label: 'Unified ID', group: 'External', cid: 'External' },
+        {id: 'WES', label: 'WES', group: 'External', cid: 'External' }
+
     ]);
 
     // create an array with edges
     var edges = new vis.DataSet([
-        {from: 1, to: 3},
-        {from: 1, to: 2},
-        {from: 2, to: 4},
-        {from: 2, to: 5}
+        //SupportOps to SupportOps
+        {from: 'Grafana', to: 'Monitoring-Nginx' },
+        {from: 'Grafana', to: 'Prometheus' },
+        {from: 'Grafana', to: 'Monitoring' },
+        {from: 'Grafana', to: 'Shipyard' },
+        {from: 'Monitoring-Nginx', to: 'ELK Stack' },
+
+        //Connected to Connected
+        {from: 'XP Heartbeats', to: 'C-Track' },
+        {from: 'IRS', to: 'Ext API Apache RP' },
+        {from: 'Direct Connect', to: 'Ext API Apache RP' },
+        {from: 'OVRS', to: 'Ext API Apache RP' },
+        {from: 'Ext API Apache RP', to: 'RSDC' },
+        {from: '3PAR', to: 'Stats Bridge' },
+        {from: 'Midways', to: 'Domino' },
+        {from: 'Stats Bridge', to: 'RSDC' },
+        {from: 'C-Track', to: 'RSDC' },
+        {from: 'JRules', to: 'RSDC', arrows: 'to,from' },
+        {from: 'RSDC', to: 'GDID' },
+        {from: 'RSDC', to: 'APP DB' },
+        {from: 'Event SBS', to: 'RSDC' },
+        {from: 'RSDC', to: 'SES' },
+        {from: 'RSDC', to: 'BusinessMsg SBS' },
+        {from: 'RSDC', to: 'DeviceOrg SBS' },
+        {from: 'RSDC', to: 'CustomerOrg SBS' },
+        {from: 'RSDC', to: 'DeviceConfig SBS' },
+        {from: 'RSDC', to: 'DeviceReg SBS' },
+        {from: 'RSDC', to: 'SWM' },
+        {from: 'GDID', to: 'DeviceOrg SBS' },
+        {from: 'SADB', to: 'GDID' },
+        {from: 'AMC', to: 'APP DB' },
+        {from: 'Event SBS', to: 'APP DB', arrows: 'to,from' },
+        {from: 'iSA Portal', to: 'WISC SBS' },
+        {from: 'HPESC', to: 'iSA Portal', arrows: 'to,from' },
+        {from: 'SADB', to: 'BusinessMsg SBS' },
+        {from: 'SADB', to: 'DeviceOrg SBS' },
+        {from: 'SADB', to: 'CustomerOrg SBS' },
+        {from: 'SADB', to: 'DeviceReg SBS' },
+        {from: 'Reporting SBS', to: 'Reporting Storage' },
+        {from: 'HPESC', to: 'Reporting Storage' },
+        {from: 'HPESC', to: 'Insight Online Reports' },
+        {from: 'HPESC', to: 'BusinessMsg SBS' },
+        {from: 'HPESC', to: 'DeviceOrg SBS' },
+        {from: 'HPESC', to: 'CustomerOrg SBS' },
+        {from: 'HPESC', to: 'DeviceConfig SBS' },
+        {from: 'HPESC', to: 'DeviceReg SBS' },
+        {from: 'HPESC', to: 'Reporting SBS' },
+        {from: 'HPESC', to: 'Partner SBS' },
+        {from: 'HPESC', to: 'Event SBS' },
+        {from: 'HPESC', to: 'WISC SBS' },
+
+	//Connected to External
+        {from: 'SES', to: 'SEDB' },
+        {from: 'HPESC', to: 'Device Summary' },
+        {from: 'HPESC', to: 'HPP' },
+        {from: 'HPESC', to: 'Unified ID' },
+        {from: 'HPESC', to: 'Security SBS' },
+        {from: 'WES', to: 'RSDC' },
+        {from: 'RSDC', to: 'HPES' },
+        {from: 'RSDC', to: 'HPP' },
+        {from: 'RSDC', to: 'EAAS' },
+        {from: 'SADB', to: 'CAS' },
+        {from: 'SADB', to: 'SSIS ETL' },
+        {from: 'Partner SBS', to: 'SSIS ETL' },
+        {from: 'DMDB SQL', to: 'IRS Adoption' },
+        {from: 'APP DB', to: 'ISS ETL' },
+
+        //External to External
+        {from: 'SSIS ETL', to: 'DMDB SQL' },
+        {from: 'DMDB SQL', to: 'Case Cube' },
+        {from: 'Case Cube', to: 'SA Ops Cube' },
+        {from: 'Event Cube', to: 'SA Ops Cube' },
+        {from: 'ISS ETL', to: 'Event Cube' },
+        {from: 'ISS ETL', to: 'Metrics DB Oracle' },
+        {from: 'Metrics DB Oracle', to: 'SSIS ETL' },
+        {from: 'ICM', to: '1.0 ODS' },
+        {from: 'CDS+', to: 'SpaceCat' },
+        {from: 'SpaceCat', to: '1.0 ODS' },
+        {from: 'HPP', to: 'Unified ID' },
+        {from: 'HPP', to: 'Security SBS' },
+
+        //Self Solve to Self Solve
+        {from: 'CASPER', to: 'KMCS', arrows: 'to,from' },
+        {from: 'SAW UI', to: 'KMCS', arrows: 'to,from' },
+        {from: 'KMCS', to: 'Patch Central', arrows: 'to,from' },
+        {from: 'SAW UI', to: 'CFS' },
+        {from: 'portal-apache-hpp', to: 'portal-proxy' },
+        {from: 'portal-apache-uid', to: 'portal-proxy' },
+        {from: 'portal-proxy', to: 'DWF HF Header / Footer' },
+        {from: 'portal-proxy', to: 'portal-service-profiles' },
+        {from: 'portal-proxy', to: 'portal-product-images' },
+        {from: 'portal-proxy', to: 'Media REST sa-mediastorage' },
+        {from: 'portal-proxy', to: 'Home App portal-sahome' },
+        {from: 'portal-proxy', to: 'portal-search' },
+        {from: 'portal-proxy', to: 'sa-hpesc-search' },
+        {from: 'portal-proxy', to: 'SA1 DWF Tomcat' },
+        {from: 'portal-proxy', to: 'SA-1 Weblogic Consumer' },
+
+        //Self Solve to External
+        {from: 'Patch Central', to: 'Patch Hub', arrows: 'to,from' },
+        {from: 'KMCS', to: 'SSIS ETL' },
+        {from: 'KMCS', to: 'SiteMinder' },
+        {from: 'case-manager', to: 'WES' },
+        {from: 'portal-proxy', to: 'avOnline' },
+        {from: 'SpaceCat', to: 'Media REST sa-mediastorage' },
+        {from: 'portal-sahome', to: 'Image-Servlet' },
+        {from: 'Image-Servlet', to: 'Media REST sa-mediastorage' },
+        {from: 'portal-proxy', to: 'HPP' },
+        {from: 'portal-proxy', to: 'Security SBS' },
+        {from: 'portal-apache-uid', to: 'HPP' },
+        {from: 'portal-apache-hpp', to: 'Unified ID' },
+        {from: 'Knowledge Direct', to: 'CFS' },
+ 
+        //NextGen to NextGen
+        {from: 'Entitlement Service', to: 'Analysis [storm-topologies]' },
+
+        //NextGen to External
+        {from: 'capability-access-manager', to: 'ICM' },
+        {from: 'SpaceCat', to: 'sa-indexers' },
+        {from: 'Product Master', to: 'Sqoop' },
+        {from: 'Assessments PAF', to: 'Security SBS' },
+        {from: 'Assessments PAF', to: 'DeviceSummary' },
+
+        //Sol-CX to Sol-CX
+        {from: 'Kafka Broker Servers', to: 'Zookeeper Servers' } ,
+        {from: 'Apache Storm', to: 'Kafka Broker Servers' } ,
+        {from: 'HBase', to: 'Elasticsearch Servers' },
+
+       //Intertrain Connections
+       {from: 'Ext API Apache RP', to: 'curiosity-rest' },
+       {from: 'Ext API Apache RP', to: 'capability-access-manager' },
+       {from: 'Domino', to: 'File Submission API' },
+       {from: 'File Submission API', to: 'Kafka Broker Servers' },
+       {from: 'Ext API Apache RP', to: 'case-manager' },
+       {from: 'case-manager', to: 'Zookeeper Servers' },
+       {from: 'curiosity-rest', to: 'portal-proxy' },
+       {from: 'portal-proxy', to: 'capability-access-manager' },
+       {from: 'portal-proxy', to: 'analysis-dashboards' },
+       {from: 'capability-access-manager', to: 'Zookeeper Servers' },
+       {from: 'analysis-dashboards', to: 'Zookeeper Servers' },
+       {from: 'Media REST sa-mediastorage', to: 'Zookeeper Servers' },
+       {from: 'Media REST sa-mediastorage', to: 'HBase' },
+       {from: 'sa-hpesc-search', to: 'Elasticsearch Servers' },
+       {from: 'Predictive Analytics [feedback-rest]', to: 'Elasticsearch Servers' },
+       {from: 'SA-Indexers', to: 'Elasticsearch Servers' },
+       {from: 'Predictive Analytics [Spark]', to: 'Elasticsearch Servers' },
+       {from: 'Predictive Analytics [Spark]', to: 'HDFS' },
+       {from: 'Predictive Analytics [Spark]', to: 'Kafka Broker Servers' },
+       {from: 'Analysis [storm-topologies]', to: 'Elasticsearch Servers' },
+       {from: 'Platform [storm-topologies]', to: 'HBase' },
+       {from: 'curiosity-rest', to: 'HDFS' },
+       {from: 'Elasticsearch Servers', to: 'Prod Indexing' },
+       {from: 'data-tee-consumer', to: 'Apache Storm' },
+       {from: 'SADB', to: 'data-tee-consumer' },
+       {from: 'SADB', to: 'GDID' },
+       {from: 'RSDC', to: 'SADB' },
+       {from: 'Assessments PAF', to: 'SADB' },
+       {from: 'SADB', to: 'iSA Portal' },
+       {from: 'SADB', to: 'KMCS' },
+       {from: 'Patch Central', to: 'SML' },
+       {from: 'HPESC', to: 'Patch Central', arrows: 'to,from' },
+       {from: 'KMCS', to: 'AAE' },
+       {from: 'AAE', to: 'OAAS SBS', arrows: 'to,from' },
+       {from: 'curiosity-rest', to: 'schema-registry' },
+       {from: 'curiosity-rest', to: 'Kafka Broker Servers' },
+       {from: 'curiosity-rest', to: 'Zookeeper Servers' },
+       {from: 'AAE', to: 'HPSC', arrows: 'to,from' },
+       {from: 'HPESC', to: 'KMCS' },
+       {from: 'HPESC', to: 'SAW UI' },
+       {from: 'HPESC', to: 'CASPER' },
+       {from: 'HPESC', to: 'HPESC Mobile' },
+       {from: 'Assessments PAF', to: 'Reporting Storage' },
+       {from: 'Assessments PAF', to: 'CustomerOrg SBS' },
+       {from: 'Assessments PAF', to: 'DeviceConfig SBS' },
+       {from: 'Assessments PAF', to: 'Reporting SBS' },
+       {from: 'Prod Indexing', to: 'Sqoop' },
+       {from: 'Assessments PAF', to: 'OAAS SBS' }
+    
     ]);
 
     // create a network
@@ -40,10 +391,93 @@
         nodes: nodes,
         edges: edges
     };
-    var options = {};
+    var options = {
+      autoResize: true,
+      height: '100%',
+      width: '100%',
+      nodes: { shape: 'box', borderWidth: 2, borderWidthSelected: 10 },
+      edges: { arrows: { to: true }, color: { inherit: 'both' }, selectionWidth: 6, smooth: {enabled: false, type: 'discrete' } },
+      groups: {
+        SelfSolve:  { color: { background: 'rgba(171,239,231,1)', border: 'rgba(36,187,168,1)', highlight: { background: 'rgba(171,239,231,1)', border: 'rgba(36,187,168,1)' } }, hidden: false },
+        NextGen:    { color: { background: 'rgba(1,169,130,1)',   border: 'rgba(1,90,70,1)',    highlight: { background: 'rgba(1,169,130,1)',   border: 'rgba(1,90,70,1)', } } },
+        Connected:  { color: { background: 'rgba(166,136,173,1)', border: 'rgba(108,80,116,1)', highlight: { background: 'rgba(166,136,173,1)', border: 'rgba(108,80,116,1)' } } },
+        SolCx:      { color: { background: 'rgba(165,165,165,1)', border: 'rgba(92,92,92,1)',   highlight: { background: 'rgba(165,165,165,1)', border: 'rgba(92,92,92,1)' } } },
+        SupportOps: { color: { background: 'rgba(255,141,109,1)', border: 'rgba(157,35,0,1)',   highlight: { background: 'rgba(255,141,109,1)', border: 'rgba(157,35,0,1)' } } },
+        External:   { color: { background: 'rgba(255,255,0,1)',   border: 'rgba(185,185,0,1)',  highlight: { background: 'rgba(255,255,0,1)',   border: 'rgba(185,185,0,1)' } } }
+      }
+    };
 
     // initialize your network!
     var network = new vis.Network(container, data, options);
+    network.on("selectNode", function(params) {
+      if (params.nodes.length == 1) {
+        if (network.isCluster(params.nodes[0]) == true) {
+            network.openCluster(params.nodes[0]);
+        }
+      }
+    });
+    network.on("stabilizationProgress", function() { container.style.cursor='wait'; });
+    network.on("stabilizationIterationsDone", function() { container.style.cursor='default'; });
+
+    function updateGraph() {
+      cursor_wait();
+      network.setData(data);
+      var clusterOptionsByData;
+
+      edges.forEach( function(edge) { hideEdge(edge) } );
+      nodes.forEach( function(node) { hideNode(node) } );
+      for (var i = 0; i < trains.length; i++) {
+        var train = trains[i];
+        var groupBox = document.getElementById(groupBoxes[i]);
+
+        if (groupBox.checked == true) { 
+          clusterOptionsByData = {
+              joinCondition: function (childOptions) { return childOptions.cid == train; },
+              clusterNodeProperties: {id: train, label: train, group: train }
+          };
+          network.cluster(clusterOptionsByData);
+        };
+      }
+      cursor_clear();
+    }
+
+    function hideEdge(edge){
+        tmp_node = nodes.get(edge.from);
+        if (tmp_node != undefined) { fromCid = nodes.get(edge.from).cid; } else fromCid = "";
+        tmp_node = nodes.get(edge.to);
+        if (tmp_node != undefined) { toCid = nodes.get(edge.to).cid;     } else toCid = "";
+
+        for (var i = 0; i < trains.length; i++) {
+          var train = trains[i];
+          var visBox = document.getElementById(visBoxes[i]).checked;
+          if (visBox == false && (fromCid == train || toCid == train)) { 
+		edges.update({id: edge.id, hidden: true, physics: false });
+	        return; 
+          }
+          edges.update({id: edge.id, hidden: false, physics: true });
+        }	
+    }
+
+   function hideNode(node){
+     for (var i = 0; i < trains.length; i++) {
+          var train = trains[i];
+          var visBox = document.getElementById(visBoxes[i]).checked;
+          if (visBox == false && node.cid == train) {
+                nodes.update({id: node.id, hidden: true, physics: false });
+                return;
+          }
+	  nodes.update({id: node.id, hidden: false, physics: true });
+        }
+    }
+
+function cursor_wait() {
+document.body.style.cursor = 'wait';
+}
+
+function cursor_clear() {
+document.body.style.cursor = 'default';
+}
+
 </script>
 </body>
 </html>

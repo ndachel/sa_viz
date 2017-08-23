@@ -2,6 +2,6 @@ version: '3'
 services:
   sa_viz_app:
     build: .
-    image: sa_viz:latest
+    image: nelsd/sa_viz:latest
     ports:
      - "8080:80"
