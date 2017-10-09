@@ -1,7 +1,15 @@
-version: '3'
+version: '3.1'
+
 services:
   sa_viz_app:
     build: .
     image: nelsd/sa_viz:latest
     ports:
      - "8080:80"
+    networks:
+      - test_ov
+
+networks:
+  test_ov:
+    external:
+      name: test_ov
