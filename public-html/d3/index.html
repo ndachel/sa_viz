@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Page Template</title>
+        <script type="text/javascript" src="d3.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+	  d3.select("body")
+	    .append("p")
+            .text("New paragraph!");
+          d3.json("sa.json", function (error, data) {
+             if (error) { console.log(error);}
+             else { 
+               console.log(data);
+               //post data fetch - due to asynch
+               d3.select("body").selectAll("p")
+                 .data(data)
+                 .enter()
+                 .append("p")
+                 .text("Item");
+             }
+          });
+        </script>
+    </body>
+</html>
